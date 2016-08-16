@@ -36,7 +36,6 @@ module Atlassian
         return '' if query.nil? || query.empty?
         query = CGI::parse(query)
         query.delete('jwt')
-        p query
         query = Hash[query.sort]
         URI.encode_www_form query
       end
