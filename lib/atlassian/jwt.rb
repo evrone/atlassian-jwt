@@ -36,8 +36,13 @@ module Atlassian
         return '' if query.nil? || query.empty?
         query = CGI::parse(query)
         query.delete('jwt')
+        query.each do |k, v|
+          query[k] = v.map {|a| CGI.escape a }.join(',') if v.is_a? Array
+          query[k].gsub!('+','%20') # Use %20, not CGI.escape default of "+"
+          query[k].gsub!('%7E','~') # Unescape "~" per JS tests
+        end
         query = Hash[query.sort]
-        URI.encode_www_form query
+        query.map {|k,v| "#{CGI.escape k}=#{v}" }.join('&')
       end
     end
   end
