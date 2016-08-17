@@ -11,6 +11,10 @@ describe Atlassian::Jwt do
     expect(Atlassian::Jwt::VERSION).not_to be nil
   end
 
+  it 'passes encode through to "ruby-jwt' do
+    Atlassian::Jwt.encode({test: true}, 'secret','HS256')
+  end
+
   # Offical Atlassian signed URL test data
   json_tests = File.read(File.expand_path('../resources/jwt-signed-urls.json', File.dirname(__FILE__)))
 

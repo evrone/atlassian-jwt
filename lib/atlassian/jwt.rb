@@ -14,6 +14,16 @@ module Atlassian
         ::JWT.decode token, secret, validate, options
       end
 
+      def encode(payload, secret, algorithm = 'HS256', header_fields = {})
+        ::JWT.encode payload, secret, algorithm, header_fields
+      end
+
+      def create_query_string_hash(uri, http_method, base_uri)
+        Digest::SHA256.hexdigest(
+          create_canonical_request(uri, http_method, base_uri)
+        )
+      end
+
       def create_canonical_request(uri, http_method, base_uri)
         uri = URI.parse(uri) unless uri.kind_of? URI
         base_uri = URI.parse(base_uri) unless base_uri.kind_of? URI
@@ -45,12 +55,6 @@ module Atlassian
         end
         query = Hash[query.sort]
         query.map {|k,v| "#{CGI.escape k}=#{v}" }.join('&')
-      end
-
-      def create_query_string_hash(uri, http_method, base_uri)
-        Digest::SHA256.hexdigest(
-          create_canonical_request(uri, http_method, base_uri)
-        )
       end
     end
   end
