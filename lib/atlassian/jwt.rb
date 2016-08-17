@@ -1,11 +1,13 @@
-require "atlassian/jwt/version"
+require 'atlassian/jwt/version'
 require 'jwt'
+require 'uri'
+require 'cgi'
 
 module Atlassian
   module Jwt
     class << self
       CANONICAL_QUERY_SEPARATOR = '&'
-      ESCAPED_CANONICAL_QUERY_SEPARATOR = '%2F'
+      ESCAPED_CANONICAL_QUERY_SEPARATOR = '%26'
 
       def decode(token,secret, validate = true, options = {})
         options.merge({:algorithm => 'HS256'})
@@ -29,7 +31,7 @@ module Atlassian
         path = '/' if path.nil? || path.empty?
         path = '/' + path unless path.start_with? '/'
         path.chomp!('/') if path.length > 1
-        path.gsub(CANONICAL_QUERY_SEPARATOR,ESCAPED_CANONICAL_QUERY_SEPARATOR)
+        path.gsub(CANONICAL_QUERY_SEPARATOR, ESCAPED_CANONICAL_QUERY_SEPARATOR)
       end
 
       def canonicalize_query_string(query)
