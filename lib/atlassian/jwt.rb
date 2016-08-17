@@ -10,7 +10,7 @@ module Atlassian
       ESCAPED_CANONICAL_QUERY_SEPARATOR = '%26'
 
       def decode(token,secret, validate = true, options = {})
-        options.merge({:algorithm => 'HS256'})
+        options = { :algorithm => 'HS256' }.merge(options)
         ::JWT.decode token, secret, validate, options
       end
 
