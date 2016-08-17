@@ -2,6 +2,9 @@ require 'spec_helper'
 require 'json'
 
 BASE_URL = ''
+JWT_OPTS = {
+  leeway: (3600 * 24 * 365 * 10) # 10 years of leeway -- the JWT gem verifies the token expiry time
+}
 
 describe Atlassian::Jwt do
   it 'has a version number' do
@@ -13,25 +16,36 @@ describe Atlassian::Jwt do
 
   test_data = JSON.parse(json_tests)
   shared_secret = test_data['secret']
-    test_data['tests'].each do |test|
-      it "#{test['name']} - Decode" do
-        uri = URI.parse(test['signedUrl'])
-        query = CGI::parse(uri.query)
-        token = query['jwt'].first
-        Atlassian::Jwt.decode(token,
-                              shared_secret,
-                              true,
-                              { leeway: (3600 * 24 * 365 * 10)})
-      end
-      it "#{test['name']} - Canonical URL" do
-        if test['name'] =~ /BasePath RFC3986 Subdelimiters/
-          pending 'Needs research'
-        end
-        canonical_uri = Atlassian::Jwt.create_canonical_request(test['signedUrl'],'GET',BASE_URL)
 
-        # Remote the jwt query param from the signed URL to get the original
+  test_data['tests'].each do |test|
 
-        expect(canonical_uri).to eq test['canonicalUrl']
-      end
+    signed_url = test['signedUrl']
+    signed_uri = URI.parse(signed_url)
+    token = CGI::parse(signed_uri.query)['jwt'].first
+
+    it "#{test['name']} - Decode" do
+      Atlassian::Jwt.decode(token,
+                            shared_secret,
+                            true,
+                            JWT_OPTS)
     end
+
+    it "#{test['name']} - Canonical URL" do
+      canonical_uri = Atlassian::Jwt.create_canonical_request(signed_url, 'GET', BASE_URL)
+
+      # Remote the jwt query param from the signed URL to get the original
+      expect(canonical_uri).to eq test['canonicalUrl']
+    end
+
+    it "#{test['name']} - QSH match" do
+      expected_qsh = Atlassian::Jwt.create_query_string_hash(signed_url, 'GET', BASE_URL)
+
+      decoded_token = Atlassian::Jwt.decode(token,
+                            shared_secret,
+                            true,
+                            JWT_OPTS).first
+
+      expect(expected_qsh).to eq decoded_token['qsh']
+    end
+  end
 end
