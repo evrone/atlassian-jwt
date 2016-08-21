@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Spike Ilacqua","Seb Ruiz"]
   spec.email         = ["spike@6kites.com","sruiz@atlassian.com"]
 
-  spec.summary       = %q{Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{Write a longer description or delete this line.}
+  spec.summary       = %q{Encode and decode JWT tokens for use with the Atlassian Connect REST APIs.}
+  spec.description   = %q{This gem simplifies generating the claims need to authenticate with the Atlassian Connect REST APIs.}
   spec.homepage      = "https://bitbucket.org/atlassian/atlassian-jwt-ruby"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
