@@ -48,7 +48,7 @@ module Atlassian
           iat: issued_at,
           exp: expires,
           qsh: qsh
-        }
+        }.merge(attributes)
       end
 
       def canonicalize_uri(uri, base_uri)
