@@ -36,7 +36,7 @@ module Atlassian
         ].join(CANONICAL_QUERY_SEPARATOR)
       end
 
-      def build_claims(issuer,url,http_method,base_url,issued_at=nil,expires=nil,attributes={})
+      def build_claims(issuer,url,http_method,base_url='',issued_at=nil,expires=nil,attributes={})
         issued_at ||= Time.now.to_i
         expires ||= issued_at + 60
         qsh = Digest::SHA256.hexdigest(
