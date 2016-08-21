@@ -15,6 +15,26 @@ describe Atlassian::Jwt do
     Atlassian::Jwt.encode({test: true}, 'secret','HS256')
   end
 
+  it 'generates claims' do
+    url = 'https://example.atlassian.com/jira/projects'
+    issuer = 'com.atlassian.test'
+
+    now = Time.now.to_i
+    qsh = Digest::SHA256.hexdigest(
+      Atlassian::Jwt.create_canonical_request(url,'get',BASE_URL)
+    )
+
+    expected_claim = {
+      iss: 'com.atlassian.test',
+      iat: now,
+      exp: now + 60,
+      qsh: qsh
+    }
+
+    claim = Atlassian::Jwt.build_claims(issuer,url,'get',BASE_URL,now,now+60)
+    expect(claim).to eq expected_claim
+  end
+
   # Offical Atlassian signed URL test data
   json_tests = File.read(File.expand_path('../resources/jwt-signed-urls.json', File.dirname(__FILE__)))
 

@@ -36,6 +36,21 @@ module Atlassian
         ].join(CANONICAL_QUERY_SEPARATOR)
       end
 
+      def build_claims(issuer,url,http_method,base_url,issued_at=nil,expires=nil,attributes={})
+        issued_at ||= Time.now.to_i
+        expires ||= issued_at + 60
+        qsh = Digest::SHA256.hexdigest(
+          Atlassian::Jwt.create_canonical_request(url,http_method,base_url)
+        )
+
+        {
+          iss: issuer,
+          iat: issued_at,
+          exp: expires,
+          qsh: qsh
+        }
+      end
+
       def canonicalize_uri(uri, base_uri)
         path = uri.path.sub(/^#{base_uri.path}/,'')
         path = '/' if path.nil? || path.empty?
