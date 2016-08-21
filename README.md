@@ -46,6 +46,17 @@ claim = Atlassian::Jwt.build_claims(issuer,url,http_method)
 jwt = JWT.encode(claim,shared_secret)
 ```
 
+If the base URL of the API is not at the root of the site,
+i.e. *https://site.atlassian.com/jira/rest/api*, you will need to pass
+in the base URL to `#.build_claims`:
+
+```
+url = 'https://jira.atlassian.com/jira/rest/api/latest/issue/JRA-9'
+base_url = 'https://jira.atlassian.com/jira'
+
+claim = Atlassian::Jwt.build_claims(issuer,url,http_method,base_url)
+```
+
 The generated JWT can then be passed in an 'Authentication' header or
 in the query string:
 
@@ -66,6 +77,20 @@ request = Net::HTTP::Get.new(uri.request_uri)
 response = http.request(request)
 ```
 
+By default the issue time of the claim is now and the expiration is 60
+seconds in the future, these can be overridden:
+
+```ruby
+claim = Atlassian::Jwt.build_claims(
+  issuer,
+  url,
+  http_method,
+  base_url,
+  Time.now - 60.seconds
+  Time.now + 1.day
+)
+```
+
 ### Decoding a JWT token
 
 The JWT from the server is usually returned a param. The underlying
@@ -75,6 +100,16 @@ how the JWT was encoded.
 
 ```ruby
 claims, jwt_header = Atlassian::Jwt.decode(params[:jwt],shared_secret)
+```
+
+By default, the JWT gem verifies that the JWT is properly signed with
+the shared secret and raises an error if it's not. However, sometimes
+is necessary to read the JWT first to determine which shared secret is
+needed. In this case, use nil for the shared secret and follow it with
+`false` to tell the gem to to verify the signature.
+
+```ruby
+claims, jwt_header = Atlassian::Jwt.decode(params[:jwt],nil,false)
 ```
 
 See the [ruby-jwt doc](https://github.com/jwt/ruby-jwt) for additional
