@@ -1,9 +1,10 @@
 # Atlassian::Jwt
 
 This gem provides helpers for generating Atlassian specific JWT
-claims. It also exposes is the
-[ruby-jwt](https://github.com/jwt/ruby-jwt) gem's `encode` and `decode`
-methods.
+claims. It also exposes the [ruby-jwt](https://github.com/jwt/ruby-jwt) 
+gem's `encode` and `decode` methods.
+
+[![build-status](https://bitbucket-badges.useast.atlassian.io/badge/atlassian/atlassian-jwt-ruby.svg)](https://bitbucket.org/atlassian/atlassian-jwt-ruby/addon/pipelines/home)
 
 ## Installation
 
@@ -47,14 +48,14 @@ jwt = JWT.encode(claim,shared_secret)
 ```
 
 If the base URL of the API is not at the root of the site,
-i.e. *https://site.atlassian.com/jira/rest/api*, you will need to pass
+i.e. *https://site.atlassian.net/jira/rest/api*, you will need to pass
 in the base URL to `#.build_claims`:
 
 ```
-url = 'https://jira.atlassian.com/jira/rest/api/latest/issue/JRA-9'
-base_url = 'https://jira.atlassian.com/jira'
+url = 'https://site.atlassian.net/jira/rest/api/latest/issue/JRA-9'
+base_url = 'https://site.atlassian.net'
 
-claim = Atlassian::Jwt.build_claims(issuer,url,http_method,base_url)
+claim = Atlassian::Jwt.build_claims(issuer, url, http_method, base_url)
 ```
 
 The generated JWT can then be passed in an 'Authentication' header or
@@ -62,7 +63,7 @@ in the query string:
 
 ```ruby
 # Header
-uri = URI('https://jira.atlassian.com/rest/api/latest/issue/JRA-9')
+uri = URI('https://site.atlassian.net/rest/api/latest/issue/JRA-9')
 http = Net::HTTP.new(uri.host, uri.port)
 request = Net::HTTP::Get.new(uri.request_uri)
 request.initialize_http_header({'Authentication' => "JWT #{jwt}"})
@@ -71,7 +72,7 @@ response = http.request(request)
 
 ```ruby
 # Query String
-uri = URI("https://jira.atlassian.com/rest/api/latest/issue/JRA-9?jwt=#{jwt}")
+uri = URI("https://site.atlassian.net/rest/api/latest/issue/JRA-9?jwt=#{jwt}")
 http = Net::HTTP.new(uri.host, uri.port)
 request = Net::HTTP::Get.new(uri.request_uri)
 response = http.request(request)
@@ -99,7 +100,7 @@ and the second being the JWT header, which contains information about
 how the JWT was encoded.
 
 ```ruby
-claims, jwt_header = Atlassian::Jwt.decode(params[:jwt],shared_secret)
+claims, jwt_header = Atlassian::Jwt.decode(params[:jwt], shared_secret)
 ```
 
 By default, the JWT gem verifies that the JWT is properly signed with
@@ -109,7 +110,7 @@ needed. In this case, use nil for the shared secret and follow it with
 `false` to tell the gem to to verify the signature.
 
 ```ruby
-claims, jwt_header = Atlassian::Jwt.decode(params[:jwt],nil,false)
+claims, jwt_header = Atlassian::Jwt.decode(params[:jwt], nil, false)
 ```
 
 See the [ruby-jwt doc](https://github.com/jwt/ruby-jwt) for additional
@@ -117,9 +118,15 @@ details.
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies. Then, 
+run `rake spec` to run the tests. You can also run `bin/console` for an 
+interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`. 
+To release a new version, update the version number in `version.rb`, and 
+then run `bundle exec rake release`, which will create a git tag for the 
+version, push git commits and tags, and push the `.gem` file to 
+[rubygems.org](https://rubygems.org).
 
 ## Contributing
 
