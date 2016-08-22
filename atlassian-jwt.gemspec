@@ -6,20 +6,12 @@ require 'atlassian/jwt/version'
 Gem::Specification.new do |spec|
   spec.name          = "atlassian-jwt"
   spec.version       = Atlassian::Jwt::VERSION
-  spec.authors       = ["Spike Ilacqua","Seb Ruiz"]
-  spec.email         = ["spike@6kites.com","sruiz@atlassian.com"]
+  spec.authors       = ["Spike Ilacqua", "Seb Ruiz"]
+  spec.email         = ["spike@6kites.com", "sruiz@atlassian.com"]
 
   spec.summary       = %q{Encode and decode JWT tokens for use with the Atlassian Connect REST APIs.}
   spec.description   = %q{This gem simplifies generating the claims need to authenticate with the Atlassian Connect REST APIs.}
   spec.homepage      = "https://bitbucket.org/atlassian/atlassian-jwt-ruby"
-
-  # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
-  # to allow pushing to a single host or delete this section to allow pushing to any host.
-  if spec.respond_to?(:metadata)
-    spec.metadata['allowed_push_host'] = "Set to 'http://mygemserver.com'"
-  else
-    raise "RubyGems 2.0 or newer is required to protect against public gem pushes."
-  end
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "exe"
