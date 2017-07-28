@@ -58,7 +58,7 @@ base_url = 'https://site.atlassian.net'
 claim = Atlassian::Jwt.build_claims(issuer, url, http_method, base_url)
 ```
 
-The generated JWT can then be passed in an 'Authentication' header or
+The generated JWT can then be passed in an 'Authorization' header or
 in the query string:
 
 ```ruby
@@ -66,7 +66,7 @@ in the query string:
 uri = URI('https://site.atlassian.net/rest/api/latest/issue/JRA-9')
 http = Net::HTTP.new(uri.host, uri.port)
 request = Net::HTTP::Get.new(uri.request_uri)
-request.initialize_http_header({'Authentication' => "JWT #{jwt}"})
+request.initialize_http_header({'Authorization' => "JWT #{jwt}"})
 response = http.request(request)
 ```
 
