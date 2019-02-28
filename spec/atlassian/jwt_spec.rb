@@ -12,7 +12,7 @@ describe Atlassian::Jwt do
   end
 
   it 'passes encode through to "ruby-jwt' do
-    Atlassian::Jwt.encode({test: true}, 'secret','HS256')
+    Atlassian::Jwt.encode({test: true}, 'secret', 'HS256')
   end
 
   it 'generates claims' do
@@ -21,7 +21,7 @@ describe Atlassian::Jwt do
 
     now = Time.now.to_i
     qsh = Digest::SHA256.hexdigest(
-      Atlassian::Jwt.create_canonical_request(url,'get',BASE_URL)
+      Atlassian::Jwt.create_canonical_request(url, 'get', BASE_URL)
     )
 
     expected_claim = {
@@ -31,7 +31,7 @@ describe Atlassian::Jwt do
       qsh: qsh
     }
 
-    claim = Atlassian::Jwt.build_claims(issuer,url,'get',BASE_URL,now,now+60)
+    claim = Atlassian::Jwt.build_claims(issuer, url, 'get', BASE_URL, now, now + 60)
     expect(claim).to eq expected_claim
   end
 
@@ -42,7 +42,6 @@ describe Atlassian::Jwt do
   shared_secret = test_data['secret']
 
   test_data['tests'].each do |test|
-
     signed_url = test['signedUrl']
     signed_uri = URI.parse(signed_url)
     token = CGI::parse(signed_uri.query)['jwt'].first
