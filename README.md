@@ -87,8 +87,8 @@ claim = Atlassian::Jwt.build_claims(
   url,
   http_method,
   base_url,
-  Time.now - 60.seconds
-  Time.now + 1.day
+  (Time.now - 60.seconds).to_i,
+  (Time.now + 1.day).to_i
 )
 ```
 
